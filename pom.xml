@@ -30,6 +30,22 @@
 				<artifactId>mule-maven-plugin</artifactId>
 				<version>${mule.maven.plugin.version}</version>
 				<extensions>true</extensions>
+				<configuration>
+					<cloudHubDeployment>
+					    <uri>https://anypoint.mulesoft.com</uri>
+					    <muleVersion>4.3.0</muleVersion>
+					    <!-- Deploy User Parameter -->
+					    <username>Maheer</username>
+					    <password>Kushi@353</password>
+					    <!-- Environment Parameter -->
+					    <environment>Sandbox</environment>
+					    <applicationName>scatter</applicationName>
+					    <businessGroup>micro</businessGroup>
+					    <workerType>1</workerType>
+					    <objectStoreV2>true</objectStoreV2>
+					</cloudHubDeployment>
+				</configuration>
+				
 			</plugin>
 			<plugin>
 				<groupId>com.mulesoft.munit.tools</groupId>

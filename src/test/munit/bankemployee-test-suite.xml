@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:munit="http://www.mulesoft.org/schema/mule/munit"
+	xmlns:munit-tools="http://www.mulesoft.org/schema/mule/munit-tools" xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xsi:schemaLocation="
+		http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+		http://www.mulesoft.org/schema/mule/munit http://www.mulesoft.org/schema/mule/munit/current/mule-munit.xsd
+		http://www.mulesoft.org/schema/mule/munit-tools  http://www.mulesoft.org/schema/mule/munit-tools/current/mule-munit-tools.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd">
+	<munit:config name="bankemployee-test-suite.xml" />
+	<http:request-config name="HTTP_Request_configuration" doc:name="HTTP Request configuration" doc:id="2c595e85-9cdc-42b9-9874-03258b74aaad" >
+		<http:request-connection host="localhost" port="8081" connectionIdleTimeout="120000"/>
+	</http:request-config>
+	<munit:test name="bankemployee-test-suite-bankemployee-mainTest" doc:id="f34056c4-bffd-486c-b54a-83fc41b2ff8d" description="Test">
+		<munit:enable-flow-sources >
+			<munit:enable-flow-source value="bankemployee-main" />
+			<munit:enable-flow-source value="InsertDatainSalesforceFlow" />
+		</munit:enable-flow-sources>
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock when" doc:id="8a321a91-5f38-4a25-83c4-66fedb273d27" processor="salesforce:create">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="Create" attributeName="doc:name" />
+					<munit-tools:with-attribute whereValue="5d274a3e-ee60-4bee-bb0f-441e3e6e511f" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value='#[MunitTools::getResourceAsString("example/response.json")]' mediaType="application/json" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution>
+			<munit:set-event doc:name="Set Event" doc:id="cfd82f41-4549-4d45-baa3-9dff46b10014" >
+				<munit:payload value='#[MunitTools::getResourceAsString("example/request.json")]' mediaType="application/json" />
+			</munit:set-event>
+			<http:request method="POST" doc:name="Request" doc:id="45a61f69-92e1-424e-877e-501b34e62792" config-ref="HTTP_Request_configuration" path="/api/CreateAccount"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert-that doc:name="Assert that" doc:id="e6ae734a-251d-4674-b3fd-32cb30b4ebb9" expression="#[payload]" is="#[MunitTools::notNullValue()]"/>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="bankemployee-test-suite-bankemployee-mainTest1" doc:id="4ce91023-d194-48f8-8016-09982c24e215" description="Test">
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock when" doc:id="da491944-3f67-428b-993e-ec546c8ac1ec" processor="salesforce:create">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="Create" attributeName="doc:name" />
+					<munit-tools:with-attribute whereValue="5d274a3e-ee60-4bee-bb0f-441e3e6e511f" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:error typeId="SALESFORCE:INVALID_INPUT" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution>
+			<munit:set-event doc:name="Set Event" doc:id="769c8074-3551-4b00-bae6-1ac580215853" >
+				<munit:payload value='#[MunitTools::getResourceAsString("example/request.json")]' mediaType="application/json" />
+			</munit:set-event>
+			<http:request method="POST" doc:name="Request" doc:id="a50d610f-a3e8-448b-b7fd-6002a96f553f" config-ref="HTTP_Request_configuration" path="/api/CreateAccount"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert-that doc:name="Assert that" doc:id="09aa9949-6aeb-444b-9179-2da7d0b40dae" is="#[MunitTools::notNullValue()]" expression="#[payload]"/>
+		</munit:validation>
+	</munit:test>
+
+
+</mule>

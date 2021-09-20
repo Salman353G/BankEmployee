@@ -1,0 +1,82 @@
+#%RAML 1.0
+title: BankEmployee
+
+traits:
+  
+/GetEmployeeDetails:
+  get:
+    
+    queryParameters:
+      BankAccountNumber:
+        required: true
+        type: integer
+      AccountHolderName:
+        required: true
+        type: string
+    responses:
+      200:
+        body:
+          application/json:
+        
+            examples: {
+                "AccountHolderName": "SalmanGorentla",
+                "AccountNumber": 4526312313,
+                "Balance": 500000,
+                "MobileNumber": 9440882963,
+                "Address": "Proddatur"
+              }
+                    
+      400:
+        body:
+          application/json:
+            example:
+              {
+                "Message": "Bad Request"
+              }
+      500:
+        body:
+          application/json:
+            example:
+              {
+                "Message": "Internal Error"
+              }
+/CreateAccount:
+ 
+  post:
+    body:
+      application/json:
+        
+        examples:
+          {
+            "Name": "Salman Gorentla",
+            "MobileNumber": "9440882963",
+            "Address": "Prddatur",
+            "Panid": "EHLPS2599G",
+            "AAdharNo":" 353"
+          }
+    responses:
+      200:
+        body:
+          application/json:
+            
+            examples:
+              {
+                "AccountNumber": 353453,
+                "AccountHolderName": "Salman G",
+                "Balance": 10000
+              }
+      400:
+       body:
+         application/json:
+           example:
+              {
+                "Message": "Bad Request"
+               }
+      500:
+        body:
+          application/json:
+            example:
+              {
+                "Message": "internal Erro"
+              }
+          

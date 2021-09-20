@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:salesforce="http://www.mulesoft.org/schema/mule/salesforce" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/salesforce http://www.mulesoft.org/schema/mule/salesforce/current/mule-salesforce.xsd">
+	<flow name="InsertDatainSalesforceFlow" doc:id="32e68b94-ac57-4fa7-9662-cd13ba5b7ac3" >
+		<logger level="INFO" doc:name="RequestforSaleforce" doc:id="ed605d88-6760-4f90-9107-023c53e69010" message="requestforSalesforce.#[payload]"/>
+		<ee:transform doc:name="Mapping" doc:id="e597f338-a750-452f-9f9c-9a4c696286c7" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload map{
+	"accountHolderName__c":$.Name default"",
+	"accountNumber__c": $.Number default"",
+	"amount__c": $.amount default "",
+	"Email__c": $.email default "",
+	"phNumber__c": $.phNumber default""
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<salesforce:create type="bankEmployeeDetail__c" doc:name="Create" doc:id="5d274a3e-ee60-4bee-bb0f-441e3e6e511f" config-ref="Salesforce_Config1" />
+		<ee:transform doc:name="convertingintoJson" doc:id="7d967f3c-6518-4629-91a4-dda7ed211b5d" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+sucessful:(payload.items map $.successful)]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<error-handler >
+			<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="cb693e37-593d-43e9-90a6-40949f8d1aa1" type="ANY">
+				<logger level="INFO" doc:name="Logger" doc:id="2addf23b-d8ca-4ad1-be89-fd62014d6e99" message="error log"/>
+				<ee:transform doc:name="Transform Message" doc:id="f51fb02f-bd8d-48e0-bfc2-1f102c9fb196" >
+					<ee:message >
+					</ee:message>
+					<ee:variables >
+						<ee:set-variable variableName="errorResponse" ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	errorMessage:{
+		error:{
+			code: "",
+			'type': error.errorType.namespace ++ ":" ++ error.errorType.identifier,
+			description: error.description,
+			uuid: vars.uuid
+		}
+	}
+}]]></ee:set-variable>
+					</ee:variables>
+				</ee:transform>
+			</on-error-propagate>
+		</error-handler>
+	</flow>
+</mule>

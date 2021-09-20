@@ -1,0 +1,9 @@
+http:
+  host: "0.0.0.0"
+  port: "8081"
+  path: "/api/*"
+salesforce:
+  username: "![zdJJAOQaN+T/MawSu1rXjMCjC7mm4Itk]"
+  password: "![LMJrOoLpPzcXE0xWsw9/wQ==]"
+  token: "![fx2WmY5HvoWpHHvEavCrYi9cWXViJXSKclfvM5IZBqI=]"
+  

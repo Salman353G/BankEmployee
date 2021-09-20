@@ -44,8 +44,7 @@
 					    <workerType>1</workerType>
 					    <objectStoreV2>true</objectStoreV2>
 					</cloudHubDeployment>
-				</configuration>
-				
+				</configuration>				
 			</plugin>
 			<plugin>
 				<groupId>com.mulesoft.munit.tools</groupId>
